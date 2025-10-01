@@ -1,18 +1,14 @@
 // Phiên Tòa Triết Học - Biến Đổi Khí Hậu
-// Tác giả: AI Assistant
-// Mô tả: Ứng dụng web mô phỏng phiên tòa triết học về biến đổi khí hậu
-
 class PhilosophicalTrial {
   constructor() {
-    this.trialTime = 10 * 60; // 5 phút
+    this.trialTime = 10 * 60;
     this.timeLeft = this.trialTime;
     this.timerInterval = null;
     this.isTrialActive = false;
     this.conversationHistory = [];
     this.selectedCharacter = null;
-    this.synthesis = null; // Text-to-speech synthesis
+    this.synthesis = null;
 
-    // Khởi tạo các nhân vật với prompt đặc trưng
     this.characters = {
       marx: {
         name: "Karl Marx",
@@ -681,55 +677,45 @@ Hãy trả lời câu hỏi trên một cách ngắn gọn và dễ hiểu, th�
     this.showConclusionLoading();
 
     try {
-      // Tạo kết luận dựa trên cuộc trò chuyện
+      // Tạo kết luận ngắn gọn
       const conclusion = await this.generateConclusionText();
-      document.getElementById("conclusion-text").innerHTML = conclusion;
+      this.displayConclusion(conclusion);
 
-      // Tạo đánh giá tư duy chi tiết
-      const thinkingEvaluation = await this.generateThinkingEvaluation();
-      this.displayThinkingEvaluation(thinkingEvaluation);
+      // Tạo đánh giá tư duy
+      const evaluation = await this.generateThinkingEvaluation();
+      this.displayThinkingEvaluation(evaluation);
 
-      // Tính điểm
-      const scores = this.calculateScores();
-      this.displayScores(scores);
+      // Hiệu ứng animation
+      this.animateConclusion();
     } catch (error) {
       console.error("Lỗi khi tạo kết luận:", error);
-      document.getElementById("conclusion-text").innerHTML =
-        "<p>Xin lỗi, có lỗi xảy ra khi tạo kết luận. Cảm ơn bạn đã tham gia phiên tòa!</p>";
+      this.displayConclusion(
+        "<p>Xin lỗi, có lỗi xảy ra khi tạo kết luận. Cảm ơn bạn đã tham gia!</p>"
+      );
     } finally {
       this.hideLoading();
     }
   }
 
-  // Tạo văn bản kết luận
+  // Tạo văn bản kết luận ngắn gọn
   async generateConclusionText() {
-    const conclusionPrompt = `
-Dựa trên cuộc trò chuyện trong phiên tòa triết học về biến đổi khí hậu, hãy tạo một kết luận tổng hợp các quan điểm đã được trình bày:
+    const conclusionPrompt = `Dựa trên cuộc trò chuyện về biến đổi khí hậu, tạo kết luận ngắn gọn:
 
-Lịch sử cuộc trò chuyện:
 ${this.conversationHistory
-  .map(
-    (conv) =>
-      `Nhân vật: ${this.characters[conv.character].name}
-Câu hỏi: ${conv.question}
-Trả lời: ${conv.response}`
-  )
-  .join("\n\n")}
+  .map((conv) => `${this.characters[conv.character].name}: ${conv.question}`)
+  .join("\n")}
 
-Hãy tạo một kết luận:
-1. Tóm tắt các quan điểm chính đã được trình bày
-2. Phân tích mâu thuẫn và điểm chung giữa các quan điểm
-3. Đưa ra đánh giá về tính thuyết phục của từng quan điểm
-4. Kết luận về vấn đề biến đổi khí hậu từ góc nhìn triết học Mác-Lênin
+Tạo kết luận ngắn gọn:
+1. Tóm tắt quan điểm chính
+2. Kết luận từ góc nhìn Mác-Lênin
 
-Trả lời bằng tiếng Việt, khoảng 500-800 từ.
-        `;
+Trả lời ngắn gọn bằng tiếng Việt, khoảng 100 từ.`;
 
     try {
       return await this.callGeminiAPI(conclusionPrompt);
     } catch (error) {
       console.error("Lỗi khi tạo kết luận:", error);
-      return "<p>Xin lỗi, không thể tạo kết luận do lỗi kết nối AI. Vui lòng thử lại sau.</p>";
+      return "<p>Xin lỗi, không thể tạo kết luận. Vui lòng thử lại sau.</p>";
     }
   }
 
@@ -786,55 +772,37 @@ Trả lời bằng tiếng Việt, khoảng 500-800 từ.
     }
   }
 
-  // Tạo đánh giá tư duy chi tiết
+  // Tạo đánh giá tư duy ngắn gọn
   async generateThinkingEvaluation() {
-    const evaluationPrompt = `
-Dựa trên cuộc trò chuyện trong phiên tòa triết học về biến đổi khí hậu, hãy đánh giá tư duy của người chơi:
+    const evaluationPrompt = `Đánh giá tư duy người chơi dựa trên cuộc trò chuyện:
 
-Lịch sử cuộc trò chuyện:
 ${this.conversationHistory
-  .map(
-    (conv) =>
-      `- ${conv.character}: ${conv.question}\n  Trả lời: ${conv.response}`
-  )
+  .map((conv) => `${conv.character}: ${conv.question}`)
   .join("\n")}
 
-Hãy đánh giá các khía cạnh sau (mỗi khía cạnh 0-10 điểm):
+Đánh giá 5 khía cạnh (0-10 điểm):
+1. Tư duy phản biện
+2. Hiểu biết triết học
+3. Tư duy hệ thống
+4. Khả năng phân tích
+5. Tư duy sáng tạo
 
-1. **Tư duy phản biện**: Khả năng đặt câu hỏi sắc bén, phân tích vấn đề
-2. **Hiểu biết triết học**: Nắm bắt các khái niệm Mác-Lênin về môi trường
-3. **Tư duy hệ thống**: Nhìn nhận vấn đề từ nhiều góc độ khác nhau
-4. **Khả năng phân tích**: So sánh, đối chiếu các quan điểm
-5. **Tư duy sáng tạo**: Đưa ra giải pháp mới mẻ, độc đáo
-
-Trả lời theo format JSON:
+Trả lời JSON ngắn gọn:
 {
-  "scores": {
-    "critical_thinking": 8,
-    "philosophical_understanding": 7,
-    "systematic_thinking": 6,
-    "analytical_ability": 8,
-    "creative_thinking": 5
-  },
+  "scores": {"critical_thinking": 8, "philosophical_understanding": 7, "systematic_thinking": 6, "analytical_ability": 8, "creative_thinking": 5},
   "total_score": 34,
   "overall_rating": "Tốt",
-  "strengths": ["Tư duy phản biện tốt", "Phân tích sắc bén"],
-  "weaknesses": ["Cần hiểu sâu hơn về triết học", "Tư duy sáng tạo còn hạn chế"],
-  "suggestions": [
-    "Đọc thêm về duy vật biện chứng",
-    "Thực hành đặt câu hỏi mở",
-    "Tìm hiểu các giải pháp sáng tạo cho môi trường"
-  ],
-  "detailed_feedback": "Bạn có tư duy phản biện tốt và khả năng phân tích sắc bén. Tuy nhiên, cần nâng cao hiểu biết về triết học Mác-Lênin và phát triển tư duy sáng tạo hơn."
-}
-
-Trả lời bằng tiếng Việt, ngắn gọn và dễ hiểu.`;
+  "strengths": ["Tư duy phản biện tốt"],
+  "weaknesses": ["Cần hiểu sâu hơn"],
+  "suggestions": ["Đọc thêm về triết học"],
+  "detailed_feedback": "Nhận xét ngắn gọn"
+}`;
 
     try {
       const response = await this.callGeminiAPI(evaluationPrompt);
       return JSON.parse(response);
     } catch (error) {
-      console.error("Lỗi khi tạo đánh giá tư duy:", error);
+      console.error("Lỗi khi tạo đánh giá:", error);
       return {
         scores: {
           critical_thinking: 5,
@@ -846,15 +814,38 @@ Trả lời bằng tiếng Việt, ngắn gọn và dễ hiểu.`;
         total_score: 25,
         overall_rating: "Trung bình",
         strengths: ["Tham gia tích cực"],
-        weaknesses: ["Cần cải thiện nhiều mặt"],
-        suggestions: ["Thực hành thêm", "Đọc sách triết học"],
-        detailed_feedback:
-          "Cảm ơn bạn đã tham gia. Hãy tiếp tục phát triển tư duy!",
+        weaknesses: ["Cần cải thiện"],
+        suggestions: ["Thực hành thêm"],
+        detailed_feedback: "Cảm ơn bạn đã tham gia!",
       };
     }
   }
 
-  // Hiển thị đánh giá tư duy
+  // Hiển thị kết luận với animation
+  displayConclusion(conclusion) {
+    const conclusionElement = document.getElementById("conclusion-text");
+    conclusionElement.innerHTML = `
+      <div class="conclusion-header">
+        <i class="fas fa-gavel conclusion-icon"></i>
+        <h3>Kết Luận Phiên Tòa</h3>
+      </div>
+      <div class="conclusion-content">${conclusion}</div>
+      <div class="conclusion-footer">
+        <i class="fas fa-quote-left quote-icon"></i>
+        <span class="quote-text">"Tri thức là vũ khí mạnh nhất để thay đổi thế giới"</span>
+        <i class="fas fa-quote-right quote-icon"></i>
+      </div>
+    `;
+    conclusionElement.classList.add("fade-in");
+
+    // Thêm hiệu ứng typing cho nội dung
+    this.typeWriterEffect(
+      conclusionElement.querySelector(".conclusion-content"),
+      conclusion
+    );
+  }
+
+  // Hiển thị đánh giá tư duy ngắn gọn
   displayThinkingEvaluation(evaluation) {
     const scoreDisplay = document.getElementById("score-display");
     const feedbackDisplay = document.getElementById("feedback-display");
@@ -865,7 +856,7 @@ Trả lời bằng tiếng Việt, ngắn gọn và dễ hiểu.`;
       return;
     }
 
-    // Hiển thị điểm số
+    // Hiển thị điểm số với animation
     scoreDisplay.innerHTML = `
       <div class="evaluation-header">
         <h4><i class="fas fa-brain"></i> Đánh Giá Tư Duy</h4>
@@ -878,71 +869,67 @@ Trả lời bằng tiếng Việt, ngắn gọn và dễ hiểu.`;
         <div class="score-item">
           <span>Tư duy phản biện</span>
           <div class="score-bar">
-            <div class="score-fill" style="width: ${
+            <div class="score-fill" data-width="${
               evaluation.scores.critical_thinking * 10
-            }%"></div>
+            }"></div>
             <span>${evaluation.scores.critical_thinking}/10</span>
           </div>
         </div>
         <div class="score-item">
           <span>Hiểu biết triết học</span>
           <div class="score-bar">
-            <div class="score-fill" style="width: ${
+            <div class="score-fill" data-width="${
               evaluation.scores.philosophical_understanding * 10
-            }%"></div>
+            }"></div>
             <span>${evaluation.scores.philosophical_understanding}/10</span>
           </div>
         </div>
         <div class="score-item">
           <span>Tư duy hệ thống</span>
           <div class="score-bar">
-            <div class="score-fill" style="width: ${
+            <div class="score-fill" data-width="${
               evaluation.scores.systematic_thinking * 10
-            }%"></div>
+            }"></div>
             <span>${evaluation.scores.systematic_thinking}/10</span>
           </div>
         </div>
         <div class="score-item">
           <span>Khả năng phân tích</span>
           <div class="score-bar">
-            <div class="score-fill" style="width: ${
+            <div class="score-fill" data-width="${
               evaluation.scores.analytical_ability * 10
-            }%"></div>
+            }"></div>
             <span>${evaluation.scores.analytical_ability}/10</span>
           </div>
         </div>
         <div class="score-item">
           <span>Tư duy sáng tạo</span>
           <div class="score-bar">
-            <div class="score-fill" style="width: ${
+            <div class="score-fill" data-width="${
               evaluation.scores.creative_thinking * 10
-            }%"></div>
+            }"></div>
             <span>${evaluation.scores.creative_thinking}/10</span>
           </div>
         </div>
       </div>
     `;
 
-    // Hiển thị phản hồi chi tiết
+    // Hiển thị phản hồi ngắn gọn
     feedbackDisplay.innerHTML = `
       <div class="feedback-section">
         <h5><i class="fas fa-thumbs-up"></i> Điểm Mạnh</h5>
-        <ul>
-          ${evaluation.strengths
-            .map((strength) => `<li>${strength}</li>`)
-            .join("")}
-        </ul>
+        <ul>${evaluation.strengths
+          .map((strength) => `<li>${strength}</li>`)
+          .join("")}</ul>
       </div>
       <div class="feedback-section">
-        <h5><i class="fas fa-exclamation-triangle"></i> Điểm Cần Cải Thiện</h5>
-        <ul>
-          ${evaluation.weaknesses
-            .map((weakness) => `<li>${weakness}</li>`)
-            .join("")}
-        </ul>
+        <h5><i class="fas fa-exclamation-triangle"></i> Cần Cải Thiện</h5>
+        <ul>${evaluation.weaknesses
+          .map((weakness) => `<li>${weakness}</li>`)
+          .join("")}</ul>
       </div>
       <div class="feedback-section">
-        <h5><i class="fas fa-comment"></i> Nhận Xét Chi Tiết</h5>
+        <h5><i class="fas fa-comment"></i> Nhận Xét</h5>
         <p>${evaluation.detailed_feedback}</p>
       </div>
     `;
@@ -951,13 +938,58 @@ Trả lời bằng tiếng Việt, ngắn gọn và dễ hiểu.`;
     suggestionsDisplay.innerHTML = `
       <div class="suggestions-section">
         <h5><i class="fas fa-lightbulb"></i> Gợi Ý Cải Thiện</h5>
-        <ul>
-          ${evaluation.suggestions
-            .map((suggestion) => `<li>${suggestion}</li>`)
-            .join("")}
-        </ul>
+        <ul>${evaluation.suggestions
+          .map((suggestion) => `<li>${suggestion}</li>`)
+          .join("")}</ul>
       </div>
     `;
+  }
+
+  // Hiệu ứng typing cho kết luận
+  typeWriterEffect(element, text) {
+    element.innerHTML = "";
+    let i = 0;
+    const speed = 30;
+
+    function typeWriter() {
+      if (i < text.length) {
+        element.innerHTML += text.charAt(i);
+        i++;
+        setTimeout(typeWriter, speed);
+      }
+    }
+
+    setTimeout(typeWriter, 1000);
+  }
+
+  // Animation cho kết luận
+  animateConclusion() {
+    setTimeout(() => {
+      const scoreFills = document.querySelectorAll(".score-fill");
+      scoreFills.forEach((fill, index) => {
+        setTimeout(() => {
+          const width = fill.getAttribute("data-width");
+          fill.style.width = width + "%";
+        }, index * 200);
+      });
+
+      // Thêm hiệu ứng cho các phần tử khác
+      const elements = document.querySelectorAll(
+        ".feedback-section, .suggestions-section"
+      );
+      elements.forEach((el, index) => {
+        setTimeout(() => {
+          el.style.opacity = "0";
+          el.style.transform = "translateY(20px)";
+          el.style.transition = "all 0.5s ease";
+
+          setTimeout(() => {
+            el.style.opacity = "1";
+            el.style.transform = "translateY(0)";
+          }, 100);
+        }, index * 300);
+      });
+    }, 500);
   }
 
   // Bắt đầu lại phiên tòa
