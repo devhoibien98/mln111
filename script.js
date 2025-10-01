@@ -4,7 +4,7 @@
 
 class PhilosophicalTrial {
   constructor() {
-    this.trialTime = 5 * 60; // 5 phút
+    this.trialTime = 10 * 60; // 5 phút
     this.timeLeft = this.trialTime;
     this.timerInterval = null;
     this.isTrialActive = false;
