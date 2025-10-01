@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Phiên Tòa Triết Học: Biến Đổi Khí Hậu</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <!-- Header -->
+      <header class="court-header">
+        <h1>
+          <i class="fas fa-gavel"></i> Phiên Tòa Triết Học: Biến Đổi Khí Hậu
+        </h1>
+        <div class="timer-container">
+          <div class="timer">
+            <i class="fas fa-clock"></i>
+            <span id="timer">05:00</span>
+          </div>
+          <button id="start-trial" class="btn btn-primary">
+            Bắt Đầu Phiên Tòa
+          </button>
+        </div>
+      </header>
+
+      <!-- Character Selection -->
+      <section class="character-selection" id="character-selection">
+        <h2>Chọn Nhân Vật Để Hỏi</h2>
+        <div class="characters-grid">
+          <div class="character-card" data-character="marx">
+            <div class="character-avatar">
+              <i class="fas fa-user-tie"></i>
+            </div>
+            <h3>Karl Marx</h3>
+            <p>Triết gia, Nhà kinh tế học</p>
+            <div class="character-description">
+              Đại diện cho quan điểm duy vật biện chứng về môi trường và giai
+              cấp
+            </div>
+          </div>
+
+          <div class="character-card" data-character="lenin">
+            <div class="character-avatar">
+              <i class="fas fa-user-tie"></i>
+            </div>
+            <h3>Vladimir Lenin</h3>
+            <p>Lãnh tụ cách mạng</p>
+            <div class="character-description">
+              Đại diện cho chủ nghĩa Mác-Lênin và cách mạng xã hội chủ nghĩa
+            </div>
+          </div>
+
+          <div class="character-card" data-character="capitalist">
+            <div class="character-avatar">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <h3>Đại Diện Tư Bản</h3>
+            <p>Chủ nghĩa tư bản</p>
+            <div class="character-description">
+              Đại diện cho quan điểm tư bản về tăng trưởng kinh tế và thị trường
+            </div>
+          </div>
+
+          <div class="character-card" data-character="nature">
+            <div class="character-avatar">
+              <i class="fas fa-leaf"></i>
+            </div>
+            <h3>Đại Diện Tự Nhiên</h3>
+            <p>Môi trường sinh thái</p>
+            <div class="character-description">
+              Đại diện cho quan điểm sinh thái và bảo vệ môi trường
+            </div>
+          </div>
+
+          <div class="character-card" data-character="worker">
+            <div class="character-avatar">
+              <i class="fas fa-hard-hat"></i>
+            </div>
+            <h3>Giai Cấp Công Nhân</h3>
+            <p>Lao động</p>
+            <div class="character-description">
+              Đại diện cho giai cấp công nhân và người lao động
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Chat Interface -->
+      <section class="chat-interface" id="chat-interface" style="display: none">
+        <div class="chat-header">
+          <h2>Phiên Tòa Đang Diễn Ra</h2>
+          <div class="header-controls">
+            <div class="selected-character" id="selected-character">
+              <span>Chọn nhân vật để bắt đầu</span>
+            </div>
+            <button id="conclude-trial" class="btn btn-conclude" disabled>
+              <i class="fas fa-gavel"></i> Kết Luận
+            </button>
+          </div>
+        </div>
+
+        <div class="chat-container">
+          <div class="chat-messages" id="chat-messages">
+            <div class="system-message">
+              <i class="fas fa-info-circle"></i>
+              <p>
+                Phiên tòa đã bắt đầu! Hãy chọn một nhân vật và đặt câu hỏi về
+                biến đổi khí hậu từ góc nhìn triết học Mác-Lênin.
+              </p>
+            </div>
+          </div>
+
+          <div class="chat-input-container">
+            <div class="character-selector">
+              <label for="character-select">Chọn nhân vật:</label>
+              <select id="character-select">
+                <option value="">-- Chọn nhân vật --</option>
+                <option value="marx">Karl Marx</option>
+                <option value="lenin">Vladimir Lenin</option>
+                <option value="capitalist">Đại Diện Tư Bản</option>
+                <option value="nature">Đại Diện Tự Nhiên</option>
+                <option value="worker">Giai Cấp Công Nhân</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <input
+                type="text"
+                id="question-input"
+                placeholder="Đặt câu hỏi về biến đổi khí hậu..."
+                disabled
+              />
+              <button id="send-question" class="btn btn-primary" disabled>
+                <i class="fas fa-paper-plane"></i> Gửi
+              </button>
+              <button id="speak-response" class="btn btn-secondary" disabled>
+                <i class="fas fa-volume-up"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Conclusion Section -->
+      <section
+        class="conclusion-section"
+        id="conclusion-section"
+        style="display: none"
+      >
+        <div class="conclusion-container">
+          <h2><i class="fas fa-gavel"></i> Kết Luận Phiên Tòa</h2>
+          <div class="conclusion-content">
+            <div class="conclusion-text" id="conclusion-text">
+              <!-- AI sẽ tạo nội dung kết luận ở đây -->
+            </div>
+            <div class="evaluation-container">
+              <div class="score-display" id="score-display">
+                <!-- Đánh giá tư duy sẽ được hiển thị ở đây -->
+              </div>
+              <div class="feedback-display" id="feedback-display">
+                <!-- Phản hồi chi tiết sẽ được hiển thị ở đây -->
+              </div>
+            </div>
+            <div class="suggestions-display" id="suggestions-display">
+              <!-- Gợi ý cải thiện sẽ được hiển thị ở đây -->
+            </div>
+            <button id="restart-trial" class="btn btn-primary">
+              <i class="fas fa-redo"></i> Bắt Đầu Lại
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay" style="display: none">
+      <div class="loading-spinner">
+        <div class="loading-text">
+          <i class="fas fa-spinner fa-spin"></i>
+          <span>AI đang suy nghĩ...</span>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
