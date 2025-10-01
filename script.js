@@ -1,7 +1,7 @@
 // Phiên Tòa Triết Học - Biến Đổi Khí Hậu
 class PhilosophicalTrial {
   constructor() {
-    this.trialTime = 10 * 60;
+    this.trialTime = 15 * 60;
     this.timeLeft = this.trialTime;
     this.timerInterval = null;
     this.isTrialActive = false;
