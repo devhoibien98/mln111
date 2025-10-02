@@ -434,7 +434,8 @@ Hãy trả lời câu hỏi trên một cách ngắn gọn và dễ hiểu, th�
 
   // Gọi Gemini API
   async callGeminiAPI(prompt) {
-    const API_KEY = "AIzaSyB-RH8eK-Si7S2J8khi3bn17eYSPEIMU1k";
+    // const API_KEY = "AIzaSyB-RH8eK-Si7S2J8khi3bn17eYSPEIMU1k";
+    const API_KEY = "AIzaSyDOhrj3JC5LKeZEqwhGe3slOAc2IjltXlM";
 
     // Kiểm tra API key
     if (!API_KEY || API_KEY === "YOUR_GEMINI_API_KEY_HERE") {
